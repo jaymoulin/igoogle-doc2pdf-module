@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs 
+    title="Convertisseur PDF" 
+    description="Module permettant de convertir un fichier de n'importe quel format (.txt, .jpg, .doc ...) en fichier PDF (sous réserve de compatibilité). Basé sur 'Document to PDF', traduit et amélioré"
+		author="Jay MOULIN (version original de Stefan Ziegler)" author_location="Paris, France"
+		screenshot="http://www.pdf24.org/plugins/google/screenshot.png"
+		thumbnail="http://www.pdf24.org/plugins/google/thumbnail.png"
+        author_link="https://github.com/jaymoulin"
+		height="150">
+		<Locale lang="fr" country="fr" />
+	</ModulePrefs>
+  <UserPref 
+    name="mail" 
+    display_name="Adresse e-mail" 
+    default_value="" 
+    required="true"/>
+  <Content type="html">
+  <![CDATA[ 
+  
+  <html>
+<head>
+<title>Document to PDF</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+
+<style type="text/css">
+td {
+	font-family : Trebuchet MS, Arial; 
+	font-size : 10pt; 
+	color : #000000; 
+	font-weight : normal; 
+	text-decoration : none;
+}
+
+a { 
+	font-size: 12px; 
+	font-family: Trebuchet MS, Verdana, Arial; 
+	color: #000000; 
+	text-decoration: none; 
+	font-weight: normal;  
+}
+</style>
+
+<script language="javascript">
+<!--	
+	var errorMsg1 	= "E-Mail non valide ! Verifiez svp.";
+	var errorMsg2 	= "Le document n'est pas valide !";
+	var errorMsg3 	= "l'Url n'est pas valide !";
+	var color1 		= "#00FF00";
+	var color2 		= "#FF0000";
+	var interval 	= 500;	
+	var border 		= 0;
+	var boxName 	= "createPDFInfoBox__MODULE_ID__";
+	
+	function changeDoc2PdfWin() {
+		var elem = document.getElementById(boxName);
+				
+		if(border == 0) {
+			elem.style.border = "1px solid " + color1;
+			border=1;
+		} else {
+			elem.style.border = "1px solid " + color2;	
+			border=0;
+		}
+	}	
+	function showDoc2PdfBoxInfo() {	
+		var elem = document.getElementById(boxName);
+		if(elem) {
+			elem.style.visibility="visible";					
+			window.setInterval("changeDoc2PdfWin()", interval);
+		}		
+	}
+	function checkEmailAdr( email ) {			
+		var filter  = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		if (!filter.test(email)) {		
+			return false;
+		}		
+		return true;
+	}
+	function getExtension(file) {
+		var pos = file.lastIndexOf(".");		
+		if(pos != -1) {
+			return file.substring(pos+1,file.length);
+		} 
+		return "";
+	}
+	function getProtokoll(url) {
+		var ret = "";
+		var pos = url.indexOf("://");
+		if(pos != -1) {
+			ret = url.substr(0, pos);
+		}	
+		return ret;
+	}
+	function validDocToPdfForm(form) {	
+		if (!checkEmailAdr(form.sendToEmail.value)) {
+			alert(errorMsg1);
+			return false;	
+		}
+		
+		var urlForm = document.getElementById('urlForm__MODULE_ID__');
+		var uplForm = document.getElementById('uploadForm__MODULE_ID__');
+		
+		if(urlForm.style.display == "none") {
+			if(getExtension(form.documentFile.value) == "") {
+				alert(errorMsg2);
+				return false;
+			}
+		} else {
+			
+			if(form.documentURL.value == "") {
+				alert(errorMsg3);
+				return false;
+			}
+			
+			var protokoll = getProtokoll(form.documentURL.value);
+			if(protokoll == "") {
+				form.documentURL.value	= "http://"+form.documentURL.value;				
+			}
+		}
+		showDoc2PdfBoxInfo();
+			
+		return true;	
+	}
+	
+	function uploadLinkClick() {
+		document.getElementById('urlForm__MODULE_ID__').style.display='none'; 
+		document.getElementById('uploadForm__MODULE_ID__').style.display='block'; 
+		document.getElementById('urlTD__MODULE_ID__').style.backgroundColor='silver';
+		document.getElementById('uploadTD__MODULE_ID__').style.backgroundColor='#F8F8F8';
+	}
+	
+	function urlLinkClick() {
+		document.getElementById('uploadForm__MODULE_ID__').style.display='none'; 
+		document.getElementById('urlForm__MODULE_ID__').style.display='block'; 
+		document.getElementById('uploadTD__MODULE_ID__').style.backgroundColor='silver';
+		document.getElementById('urlTD__MODULE_ID__').style.backgroundColor='#F8F8F8';
+	}
+-->	
+</script>
+
+</head>
+<body style="margin:5px;">
+
+<center>
+<div style="position: relative; width:300px; height:150px">
+
+	<div id="createPDFInfoBox__MODULE_ID__" style="border: solid 1px green; position: absolute; visibility: hidden; top:0px; left: 0px; width:300px; height: 148px">
+		<table height="100%" width="100%" bgcolor="white"><tr><td valign="middle" align="center">
+			<b>pdf24.org converti votre document au format PDF. Une fois terminé, le fichier PDF vous sera envoyé à votre adresse e-mail. Veuillez patienter...</b>	
+		</td></tr></table>
+	</div>
+	
+	<table style="border:1px solid silver;" bgcolor="#F8F8F8" border="0" width="300" height="150"> 
+	  <tr>
+		<td id="uploadTD__MODULE_ID__" align="center"><a href="javascript: uploadLinkClick();">Uploader un document</a></td>
+
+		<td id="urlTD__MODULE_ID__" align="center" style="background-color:silver;"><a href="javascript: urlLinkClick();">Url d'un Document</a></td>
+	  </tr>
+	  <tr>
+	    <td colspan="2">
+			<div>		
+				<div id="uploadForm__MODULE_ID__" style="display:block;">
+				    <form style="margin: 0px;" method="POST" enctype="multipart/form-data" action="http://doc2pdf.pdf24.org/doc2pdf/doc2pdf.php" onSubmit="return validDocToPdfForm(this);">
+				      
+				      <input id="sendToMail1__MODULE_ID__" name="sendToEmail" size="43" value="" type="hidden" />
+				      <b>Choissez un document</b><br>
+				      <input name="documentFile" size="20" type="file">
+					  <p style="margin:8px;"></p>
+				      <input value="Convertir !" type="submit">
+				    </form>
+				</div>
+
+				<div id="urlForm__MODULE_ID__" style="display:none">
+					<form style="margin: 0px;" method="POST" action="http://doc2pdf.pdf24.org/doc2pdf/doc2pdf.php" onSubmit="return validDocToPdfForm(this);">
+				      <input id="sendToMail2__MODULE_ID__" name="sendToEmail" size="43" value="" type="hidden" />
+				      <b>Url d'un document</b><br>
+				      <input name="documentURL" size="43" type="text" value="http://">
+
+					  <p style="margin:8px;"></p>
+				      <input value="Convertir !" type="submit">
+				    </form>
+				</div>
+			</div>
+	    </td>
+	  </tr>  
+	</table>
+</div>
+<center>
+
+<script type="text/javascript">
+
+     // Get user preferences
+     var prefs = new _IG_Prefs(__MODULE_ID__);
+     myMail = prefs.getString("mail");
+     document.getElementById("sendToMail1__MODULE_ID__").value = myMail;
+     document.getElementById("sendToMail2__MODULE_ID__").value = myMail;
+     </script>
+
+</body>
+</html>
+   
+  ]]> 
+  </Content>
+</Module>
